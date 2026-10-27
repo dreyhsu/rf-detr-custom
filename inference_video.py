@@ -29,7 +29,6 @@ def main() -> None:
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = RFDETRMedium.from_checkpoint(str(checkpoint), device=device)
-    predictor = model.inference(compile=False)
 
     box_annotator = sv.BoxAnnotator()
     label_annotator = sv.LabelAnnotator()
@@ -38,7 +37,7 @@ def main() -> None:
         """Predict objects in one frame and draw their boxes and labels."""
         # Video frames use BGR; RF-DETR expects RGB.
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        detections = predictor.predict(rgb_frame, threshold=0.5)
+        detections = model.predict(rgb_frame, threshold=0.5)
 
         labels = [
             f"{name} {confidence:.2f}"
